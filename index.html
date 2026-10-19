@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Quiz: Economía General – Macroeconomía</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+:root{
+--bg:#FFFFFF;--surface:#F4F3FA;--surface-fixed:#E6E3F2;--border:#202030;--text:#202030;--text-muted:#5E5E6A;
+--accent:#4737FF;--on-accent:#FFFFFF;--accent-soft:#D1CDFF;--ok:#A5E635;--ok-soft:#CDF28A;--ok-edge:#5E9A0C;
+--bad:#F94500;--bad-soft:#FFC2A6;--ink:#202030;--on-ok-soft:#202030;--overlay:rgba(16,16,24,.55);
+}
+[data-theme="dark"]{
+--bg:#101018;--surface:#202030;--surface-fixed:#181826;--border:#5E5E6A;--text:#FFFFFF;--text-muted:#D1CDFF;
+--accent:#4737FF;--on-accent:#FFFFFF;--accent-soft:#ACA5FF;--ok:#B9F55A;--ok-soft:#2A3318;--ok-edge:#B9F55A;
+--bad:#F94500;--bad-soft:rgba(249,69,0,.14);--ink:#202030;--on-ok-soft:#FFFFFF;--overlay:rgba(0,0,0,.65);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);
+transition:background .25s,color .25s;overflow-x:hidden;-webkit-text-size-adjust:100%}
+button{font-family:inherit;color:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
+button:focus-visible,summary:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.tx{font-variant-emoji:text}
+.screen{display:none}
+.screen.active{display:flex}
+.card{background:var(--surface);border:2px solid var(--border);border-bottom-width:4px;border-radius:18px;
+transition:background .25s,color .25s,border-color .25s}
+.btn{min-height:44px;padding:.55rem 1rem;border-radius:13px;border:2px solid var(--border);border-bottom-width:4px;
+background:var(--surface);font-weight:700;font-size:clamp(.88rem,3.6vw,1rem);transition:background .2s,color .2s}
+.btn:active{transform:translateY(2px);border-bottom-width:2px}
+.btn.primary{background:var(--accent);color:var(--on-accent)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.icon-btn{width:40px;height:40px;min-width:40px;border-radius:50%;border:2px solid var(--border);border-bottom-width:4px;
+background:var(--surface);display:grid;place-items:center;font-size:1.05rem;font-weight:700;line-height:1}
+.icon-btn.on{background:var(--accent-soft);color:var(--ink)}
+/* HOME */
+#home{height:100dvh;overflow:hidden;flex-direction:column;align-items:center;
+padding:max(.6rem,env(safe-area-inset-top)) max(.7rem,env(safe-area-inset-right)) max(.6rem,env(safe-area-inset-bottom)) max(.7rem,env(safe-area-inset-left))}
+.home-in{width:100%;max-width:720px;height:100%;display:flex;flex-direction:column;gap:.55rem;min-height:0}
+.head{display:flex;align-items:center;justify-content:space-between;gap:.6rem;flex-shrink:0}
+.head h1{flex:1;min-width:0}
+.hbtns{display:flex;gap:.5rem;flex-shrink:0}
+h1{font-weight:800;font-size:clamp(1.55rem,6.8vw,2.3rem);line-height:1.15}
+.units-card{padding:.6rem;display:flex;flex-direction:column;gap:.5rem;min-height:0;flex:1}
+.units-top{display:flex;justify-content:space-between;align-items:center;gap:.5rem;flex-shrink:0}
+.units-list{overflow-y:auto;display:flex;flex-direction:column;gap:.4rem;min-height:0;flex:1}
+.unit{display:flex;align-items:center;gap:.65rem;min-height:44px;padding:.4rem .7rem;border-radius:13px;
+border:2px solid var(--border);border-bottom-width:4px;background:var(--bg);text-align:left;width:100%;font-size:clamp(.88rem,3.6vw,1rem)}
+.unit .n{margin-left:auto;font-size:.8rem;color:var(--text-muted);white-space:nowrap}
+.unit.on{background:var(--accent-soft);color:var(--ink)}
+.unit.on .n{color:var(--ink)}
+.box{width:22px;height:22px;flex:none;border:2px solid var(--border);border-radius:6px;display:grid;place-items:center;font-size:.85rem;font-weight:800}
+.unit.on .box{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
+.counts{padding:.5rem;display:flex;gap:.4rem;flex-shrink:0;align-items:center}
+.counts .lbl{font-size:.8rem;color:var(--text-muted);font-weight:700;padding:0 .3rem}
+.cnt{flex:1;min-height:44px;border-radius:12px;border:2px solid var(--border);border-bottom-width:4px;background:var(--bg);font-weight:700}
+.cnt.on{background:var(--accent);color:var(--on-accent)}
+.toggles{display:flex;gap:.5rem;flex-shrink:0}
+.tgl{flex:1 1 50%;display:flex;align-items:center;justify-content:space-between;gap:.4rem;min-height:52px;padding:.4rem .6rem;
+background:var(--surface);border:2px solid var(--border);border-bottom-width:4px;border-radius:16px;text-align:left;font-weight:700;font-size:clamp(.74rem,3.1vw,.92rem);line-height:1.2}
+.sw{width:42px;height:24px;flex:none;border-radius:999px;background:var(--text-muted);position:relative;transition:background .2s}
+.sw::after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:var(--on-accent);transition:transform .2s}
+.sw.on{background:var(--accent)}
+.sw.on::after{transform:translateX(18px)}
+#startBtn{flex-shrink:0;min-height:52px;font-size:clamp(1rem,4.2vw,1.15rem)}
+/* QUIZ */
+#quiz{height:100dvh;overflow:hidden;justify-content:center}
+.qc{width:100%;max-width:720px;height:100%;display:flex;flex-direction:column;gap:.45rem;min-height:0;
+padding:max(.5rem,env(safe-area-inset-top)) max(.6rem,env(safe-area-inset-right)) max(.4rem,env(safe-area-inset-bottom)) max(.6rem,env(safe-area-inset-left))}
+.topbar{flex-shrink:0;background:var(--surface-fixed);padding:.5rem .6rem;display:flex;flex-direction:column;gap:.45rem;position:relative}
+.prog{height:10px;border-radius:999px;background:var(--surface);border:2px solid var(--border);overflow:hidden}
+.prog>i{display:block;height:100%;width:0;background:var(--accent);transition:width .35s}
+.trow{display:flex;align-items:center;justify-content:space-between;gap:.5rem}
+.tl{display:flex;align-items:center;gap:.5rem;font-weight:800}
+.badge{padding:.2rem .65rem;border-radius:999px;background:var(--accent-soft);color:var(--ink);font-weight:800;font-size:.9rem;border:2px solid var(--border)}
+.tr{display:flex;gap:.5rem}
+.menu{position:absolute;right:.5rem;top:calc(100% + 6px);z-index:30;min-width:230px;max-width:calc(100vw - 1.4rem);background:var(--surface);
+border:2px solid var(--border);border-bottom-width:4px;border-radius:16px;padding:.4rem;display:none;flex-direction:column;gap:.3rem}
+.menu.open{display:flex}
+.mi{display:flex;align-items:center;justify-content:space-between;gap:.6rem;min-height:44px;padding:.3rem .7rem;border-radius:12px;border:2px solid var(--border);
+background:var(--bg);font-weight:700;text-align:left;width:100%;font-size:.92rem}
+.qbox{flex-shrink:0;background:var(--surface-fixed);padding:.6rem .8rem;display:flex;flex-direction:column;gap:.3rem}
+.ulabel{color:var(--accent);font-weight:800;font-size:.78rem;text-transform:uppercase;letter-spacing:.04em}
+[data-theme="dark"] .ulabel{color:var(--accent-soft)}
+.qtext{font-weight:700;font-size:clamp(.95rem,3.9vw,1.2rem);line-height:1.3;overflow-wrap:anywhere}
+.mhint{font-size:.78rem;color:var(--text-muted);font-weight:600}
+.quiz-scroll-area{flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:.45rem;padding:.1rem .1rem .2rem}
+.opt{display:flex;align-items:center;gap:.65rem;width:100%;min-height:44px;padding:.55rem .75rem;text-align:left;border-radius:13px;
+border:2px solid var(--border);border-bottom-width:4px;background:var(--surface);font-size:clamp(.88rem,3.6vw,1rem);line-height:1.3;overflow-wrap:anywhere;transition:background .15s}
+.opt .t{flex:1;min-width:0}
+.mark{width:22px;height:22px;flex:none;border:2px solid var(--border);border-radius:50%;display:grid;place-items:center}
+.opt.multi .mark{border-radius:6px}
+.mark::after{content:"";width:10px;height:10px;border-radius:50%;background:transparent}
+.opt.multi .mark::after{border-radius:3px}
+.opt.sel{background:var(--accent-soft);color:var(--ink)}
+.opt.sel .mark::after{background:var(--accent)}
+.opt.ok{background:var(--ok);border-color:var(--ok-edge);color:var(--ink)}
+.opt.ok .mark{border-color:var(--ink)}
+.opt.ok .mark::after{background:var(--ink)}
+.opt.okfade{background:var(--ok-soft);border-color:var(--ok-edge);color:var(--on-ok-soft)}
+.opt.bad{background:var(--bad);color:var(--on-accent);border-color:var(--bad)}
+.opt.bad .mark{border-color:var(--on-accent)}
+.opt.bad .mark::after{background:var(--on-accent)}
+.opt:disabled{cursor:default}
+.fb{border-radius:16px;border:2px solid var(--border);border-bottom-width:4px;padding:.6rem .8rem;font-size:clamp(.88rem,3.5vw,.98rem);overflow-wrap:anywhere}
+.fb.ok{background:var(--ok-soft);border-color:var(--ok-edge);color:var(--on-ok-soft)}
+.fb.bad{background:var(--bad-soft);border-color:var(--bad);color:var(--text)}
+.fb b{font-weight:800}
+.fb .exp{margin-top:.4rem;font-size:.86rem;opacity:.95;padding-top:.4rem;border-top:2px dashed var(--border)}
+.cd{display:block;margin-top:.25rem;font-size:.8rem;opacity:.8}
+.bar{flex-shrink:0;background:var(--surface-fixed);padding:.5rem .6rem;display:none;border-radius:18px;border:2px solid var(--border);border-bottom-width:4px;padding-bottom:max(.5rem,env(safe-area-inset-bottom))}
+.bar.show{display:block}
+.bar .btn{width:100%;min-height:48px}
+/* RESULTS */
+#results{min-height:100dvh;justify-content:center;align-items:flex-start;
+padding:max(.8rem,env(safe-area-inset-top)) max(.8rem,env(safe-area-inset-right)) max(1rem,env(safe-area-inset-bottom)) max(.8rem,env(safe-area-inset-left))}
+.res-in{width:100%;max-width:720px;display:flex;flex-direction:column;gap:.8rem}
+.res-top{display:flex;justify-content:flex-end}
+.final{padding:1.6rem 1rem;text-align:center;font-weight:800;font-size:clamp(1.3rem,6vw,1.9rem)}
+.res-btns{display:flex;gap:.6rem}
+.res-btns .btn{flex:1}
+.coll>summary{list-style:none;cursor:pointer;min-height:48px;display:flex;align-items:center;justify-content:space-between;gap:.6rem;padding:.6rem .9rem;font-weight:800;font-size:1.1rem}
+.coll>summary::-webkit-details-marker{display:none}
+.chev{width:10px;height:10px;flex:none;border-right:3px solid currentColor;border-bottom:3px solid currentColor;transform:rotate(45deg);margin:0 .3rem 4px 0;transition:transform .2s}
+.coll[open]>summary .chev{transform:rotate(-135deg);margin:4px .3rem 0 0}
+.coll-in{padding:0 .8rem .8rem;display:flex;flex-direction:column;gap:.6rem}
+.tabs{display:flex;gap:.4rem}
+.tab{flex:1;min-height:44px;padding:.3rem .4rem;border-radius:12px;border:2px solid var(--border);border-bottom-width:4px;background:var(--surface);font-weight:700;font-size:clamp(.78rem,3.3vw,.95rem)}
+.tab.on{background:var(--accent);color:var(--on-accent)}
+.rev{padding:.75rem .9rem;border-left:8px solid var(--ok-edge);display:flex;flex-direction:column;gap:.4rem;overflow-wrap:anywhere}
+.rev.bad{border-left-color:var(--bad)}
+.rev .rq{font-weight:700}
+.rev .ro{display:flex;gap:.45rem;font-size:.92rem;padding:.3rem .5rem;border-radius:10px}
+.rev .ro.ok{background:var(--ok-soft);color:var(--on-ok-soft)}
+.rev .ro.bad{background:var(--bad-soft)}
+.rev .ro.miss{background:var(--surface-fixed);border:2px dashed var(--ok-edge)}
+.rev .rx{font-size:.86rem;color:var(--text-muted)}
+/* TABLA DE PUNTAJES */
+.tstat{font-size:.8rem;color:var(--text-muted);font-weight:600;overflow-wrap:anywhere}
+.tlist{display:flex;flex-direction:column;gap:.4rem}
+.trk{display:grid;grid-template-columns:auto 1fr auto;align-items:center;column-gap:.6rem;padding:.5rem .7rem;border-radius:13px;border:2px solid var(--border);border-bottom-width:4px;background:var(--bg)}
+.trk.me{background:var(--accent-soft);color:var(--ink)}
+.rk{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:.9rem;background:var(--surface-fixed);border:2px solid var(--border);color:var(--text)}
+.trk.me .rk{background:var(--bg);color:var(--text)}
+.tmid{min-width:0}
+.trk .tn{font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.trk .td{font-size:.78rem;color:var(--text-muted)}
+.trk.me .td{color:var(--ink)}
+.trk .ts{white-space:nowrap;font-size:.82rem}
+/* MODALES */
+.ov{position:fixed;inset:0;background:var(--overlay);display:none;align-items:center;justify-content:center;z-index:50;padding:1rem}
+.ov.open{display:flex}
+.modal{width:100%;max-width:380px;max-height:90dvh;overflow-y:auto;padding:1.2rem;display:flex;flex-direction:column;gap:.8rem;background:var(--surface)}
+.modal.wide{max-width:460px}
+.modal p{font-weight:700;line-height:1.35}
+.modal .mp{font-weight:500;color:var(--text-muted);font-size:.92rem}
+.modal .mh{font-weight:800;font-size:1.5rem;line-height:1.2}
+.modal .row{display:flex;gap:.6rem;flex-wrap:wrap}
+.modal .row .btn{flex:1;min-width:110px}
+.mhead{display:flex;align-items:center;justify-content:space-between;gap:.6rem}
+.lbl2{font-size:.92rem;color:var(--text-muted);font-weight:600;margin-bottom:-.4rem}
+.name-in{width:100%;min-height:50px;padding:.5rem .9rem;border-radius:14px;border:2px solid var(--border);border-bottom-width:4px;background:var(--bg);color:var(--text);font-family:inherit;font-size:1rem}
+.name-in:focus{outline:3px solid var(--accent);outline-offset:2px}
+@media (min-width:600px){
+.home-in,.res-in{gap:.8rem}
+.units-card{padding:.9rem}
+.opt{padding:.7rem 1rem}
+}
+@media (max-height:640px){
+h1{font-size:clamp(1.3rem,5.6vw,1.8rem)}
+}
+</style>
+</head>
+<body>
+
+<section id="home" class="screen active">
+<div class="home-in">
+<div class="head">
+<h1>Quiz: Macroeconomía</h1>
+<div class="hbtns">
+<button class="icon-btn" id="cloudBtn" aria-label="Guardar en la nube"><i class="ti ti-cloud"></i></button>
+<button class="icon-btn" id="rankBtn" aria-label="Tabla de puntajes">#</button>
+<button class="icon-btn tx themeBtn" aria-label="Cambiar tema"></button>
+</div>
+</div>
+<div class="card units-card">
+<div class="units-top">
+<button class="btn" id="allBtn"></button>
+</div>
+<div class="units-list" id="unitsList"></div>
+</div>
+<div class="card counts" id="counts"></div>
+<div class="toggles">
+<button class="tgl" data-toggle="showExplanations" role="switch"><span class="tx">⚯&#xFE0E; Mostrar explicaciones</span><span class="sw" data-sw="showExplanations"></span></button>
+<button class="tgl" data-toggle="autoAdvance" role="switch"><span class="tx">⏭&#xFE0E; Auto-avance en aciertos</span><span class="sw" data-sw="autoAdvance"></span></button>
+</div>
+<button class="btn primary tx" id="startBtn">▶&#xFE0E; Comenzar quiz</button>
+</div>
+</section>
+
+<section id="quiz" class="screen">
+<div class="qc">
+<div class="topbar card">
+<div class="prog"><i id="progBar"></i></div>
+<div class="trow">
+<div class="tl"><span id="counter">1/1</span><span class="badge tx" id="score">★&#xFE0E; 0</span></div>
+<div class="tr">
+<button class="icon-btn tx" id="setBtn" aria-label="Ajustes">⏣</button>
+<button class="icon-btn tx" id="menuBtn" aria-label="Menú">⫶☰</button>
+</div>
+</div>
+<div class="menu" id="setMenu">
+<button class="mi tx" id="themeItem"></button>
+<button class="mi" data-toggle="showExplanations" role="switch"><span class="tx">⚯&#xFE0E; Mostrar explicaciones</span><span class="sw" data-sw="showExplanations"></span></button>
+<button class="mi" data-toggle="autoAdvance" role="switch"><span class="tx">⏭&#xFE0E; Auto-avance en aciertos</span><span class="sw" data-sw="autoAdvance"></span></button>
+</div>
+<div class="menu" id="mainMenu">
+<button class="mi tx" id="scoresItem">★&#xFE0E; Tabla de puntajes</button>
+<button class="mi tx" id="restartItem">↺ Reiniciar cuestionario</button>
+<button class="mi tx" id="homeItem">🏠&#xFE0E; Menú inicial</button>
+</div>
+</div>
+<div class="qbox card">
+<div class="ulabel" id="uLabel"></div>
+<div class="qtext" id="qText"></div>
+<div class="mhint" id="mHint"></div>
+</div>
+<div class="quiz-scroll-area" id="scrollArea">
+<div id="opts" style="display:flex;flex-direction:column;gap:.45rem"></div>
+<div id="fbWrap"></div>
+</div>
+<div class="bar" id="bar"><button class="btn primary tx" id="mainBtn"></button></div>
+</div>
+</section>
+
+<section id="results" class="screen">
+<div class="res-in">
+<div class="res-top"><button class="icon-btn tx themeBtn" aria-label="Cambiar tema"></button></div>
+<div class="card final" id="final"></div>
+<div class="res-btns">
+<button class="btn primary" id="repeatBtn">Repetir quiz</button>
+<button class="btn" id="newBtn">Nuevo quiz</button>
+</div>
+<details class="card coll" id="revBox">
+<summary><span class="tx">🔍&#xFE0E; Revisión completa</span><span class="chev"></span></summary>
+<div class="coll-in">
+<div class="tabs" id="tabs">
+<button class="tab on" data-f="all">Todas</button>
+<button class="tab" data-f="ok">0 correctas</button>
+<button class="tab" data-f="bad">0 incorrectas</button>
+</div>
+<div id="revList" style="display:flex;flex-direction:column;gap:.6rem"></div>
+</div>
+</details>
+<details class="card coll" id="tblBox">
+<summary><span class="tx">★&#xFE0E; Tabla de puntajes</span><span class="chev"></span></summary>
+<div class="coll-in" id="resTable"></div>
+</details>
+</div>
+</section>
+
+<div class="ov" id="ov">
+<div class="modal card">
+<p id="modalMsg"></p>
+<div class="row">
+<button class="btn" id="mCancel">Cancelar</button>
+<button class="btn primary" id="mOk">Confirmar</button>
+</div>
+</div>
+</div>
+
+<div class="ov" id="nameOv">
+<div class="modal card wide">
+<h2 class="mh">Tu nombre</h2>
+<p class="mp">Ingresalo para que aparezca en la tabla de puntajes.</p>
+<input class="name-in" id="nameIn" type="text" maxlength="40" autocomplete="name" placeholder="Escribí tu nombre">
+<div class="row">
+<button class="btn" id="nameCancel">Cancelar</button>
+<button class="btn primary tx" id="nameOk">▶&#xFE0E; Comenzar</button>
+</div>
+</div>
+</div>
+
+<div class="ov" id="cloudOv">
+<div class="modal card wide">
+<h2 class="mh">Guardar en la nube</h2>
+<p class="mp">Para ver tu progreso en varios dispositivos, pegá la URL de tu Firebase Realtime Database y elegí un código (el mismo en todos tus dispositivos).</p>
+<input class="name-in" id="cloudUrl" type="url" inputmode="url" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="https://tu-proyecto-default-rtdb.firebaseio.com">
+<label class="lbl2" for="cloudCode">Código</label>
+<input class="name-in" id="cloudCode" type="text" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Elegí un código">
+<div class="tstat" id="cloudStatus"></div>
+<div class="row">
+<button class="btn" id="cloudClose">Cerrar</button>
+<button class="btn" id="cloudOff" style="display:none">Desconectar</button>
+<button class="btn primary" id="cloudOk">Conectar</button>
+</div>
+</div>
+</div>
+
+<div class="ov" id="scoreOv">
+<div class="modal card wide">
+<div class="mhead">
+<h2 class="mh tx">★&#xFE0E; Tabla de puntajes</h2>
+<button class="icon-btn tx" id="scoreClose" aria-label="Cerrar">✕&#xFE0E;</button>
+</div>
+<div class="coll-in" id="qzTable" style="padding:0"></div>
+</div>
+</div>
+
+<script>
+const QUESTIONS = [
+// >>> PEGAR AQUÍ LAS PREGUNTAS Y RESPUESTAS (formato {u,q,opts,a,exp}) <<<
+{u:"apuntes",q:"¿Qué estudia la macroeconomía según los apuntes?",opts:["A cada empresa o familia por separado para explicar cómo se forman los precios","A los actores de la economía (empresas, Estado, familias y resto del mundo) en forma simultánea","Únicamente al Estado, su presupuesto anual y su política de impuestos","Solo al intercambio de bienes y servicios entre el país y el resto del mundo"],a:[1],exp:{ok:"La macro analiza a todos los actores a la vez y los intercambios de bienes, servicios, factores y dinero entre ellos.",wrong:"La macro mira la economía como un todo; estudiar agentes por separado es microeconomía y las otras opciones toman solo una parte del circuito."}},
+{u:"apuntes",q:"En el flujo circular, ¿qué entregan las familias a las empresas y qué reciben a cambio?",opts:["Bienes finales de consumo, y reciben a cambio impuestos del Estado","Ahorro financiero, y reciben a cambio subsidios y transferencias estatales","Importaciones netas, y reciben a cambio divisas del resto del mundo","Factores productivos (trabajo, capital, recursos) y reciben salarios, rentas, intereses y beneficios"],a:[3],exp:{ok:"Las familias aportan factores productivos y las empresas los retribuyen con salarios, rentas, intereses y el ingreso del propietario.",wrong:"El intercambio es factores productivos por retribuciones; el resto mezcla flujos de otros actores (Estado, exterior) o flujos que van en sentido contrario."}},
+{u:"apuntes",q:"¿Cuáles de estas funciones cumple el Estado en el flujo entre los actores de la economía? Marcá todas las correctas.",opts:["Da el marco legal para que operen las empresas","Entrega los factores productivos a las empresas","Otorga subsidios a las familias","Recibe impuestos de familias y empresas","Compra y vende divisas por cuenta de las familias"],a:[0,2,3],exp:{ok:"El Estado fija el marco legal, otorga subsidios y recibe impuestos.",wrong:"Correctas: marco legal, subsidios e impuestos. Los factores productivos los aportan las familias, y las divisas son parte del vínculo con el resto del mundo."}},
+{u:"apuntes",q:"¿Qué representa el gasto agregado (GA)?",opts:["El ingreso total generado por la producción de bienes y servicios en un período","El total de impuestos menos subsidios que cobra el Estado en un período","El ahorro acumulado que las familias guardan en el sistema financiero","El total que hogares, Estado y sector externo pagan a las empresas por bienes y servicios finales"],a:[3],exp:{ok:"El GA es lo que hogares, Estado y exterior pagan a las empresas por los bienes y servicios finales; contablemente GA = Y.",wrong:"La primera opción describe el ingreso agregado (Y), que es igual al GA pero se mira desde la producción; las otras no son gasto en bienes finales."}},
+{u:"apuntes",q:"Las familias reciben el ingreso Y y lo reparten en tres partes. ¿Cuáles son?",opts:["Consumo, impuestos y ahorro","Consumo, inversión y gasto público","Salarios, rentas y beneficios","Ahorro, inversión y exportaciones"],a:[0],exp:{ok:"Y se reparte en consumo (C), impuestos (T) y ahorro (A).",wrong:"Inversión, gasto público y exportaciones son componentes del gasto que reciben las empresas; salarios, rentas y beneficios son formas en que se origina el ingreso."}},
+{u:"apuntes",q:"El valor agregado está formado por:",opts:["La suma de los costos de los insumos comprados a otras empresas","Todas las retribuciones que paga el productor a quienes participan del proceso productivo","El valor de las importaciones menos el de las exportaciones","Los impuestos directos que la empresa paga al Estado"],a:[1],exp:{ok:"Es lo que se suma al producto: salarios, intereses, rentas, ganancias e impuestos que retribuyen la producción.",wrong:"Los insumos comprados son consumo intermedio, justamente lo que se resta para obtener el valor agregado."}},
+{u:"apuntes",q:"Si se conoce el PBI a precios de mercado, ¿cómo se obtiene el PBI a costo de factores?",opts:["Sumando impuestos indirectos y restando subsidios","Sumando impuestos indirectos y sumando subsidios","Restando impuestos indirectos y restando subsidios","Restando impuestos indirectos y sumando subsidios"],a:[3],exp:{ok:"PBI(CF) = PBI(PM) − impuestos indirectos + subsidios.",wrong:"La fórmula inversa (PBI PM = PBI CF + ii − SUB) pasa de costo de factores a precios de mercado; las demás combinaciones de signos no corresponden."}},
+{u:"apuntes",q:"¿Cómo se obtiene el Producto Neto Interno (PNI)?",opts:["PBI más las rentas netas con el exterior","PBI menos los impuestos indirectos","PBI más el consumo de bienes de capital","PBI menos la depreciación del capital"],a:[3],exp:{ok:"PNI = PBI − D: se descuenta el desgaste del capital.",wrong:"Sumar rentas netas con el exterior lleva al producto nacional; los impuestos indirectos se ajustan para pasar de precios de mercado a costo de factores."}},
+{u:"apuntes",q:"En la curva de Lorenz, ¿qué significa que tenga más «panza»?",opts:["Hay mayor desigualdad en el reparto de la riqueza","Hay menor desigualdad en el reparto de la riqueza","Hay mayor crecimiento del PBI en el período","Hay más personas ocupadas en la economía"],a:[0],exp:{ok:"Cuanto más se aleja la curva de la línea de igualdad, más desigual es el reparto.",wrong:"Una curva pegada a la diagonal indicaría reparto parejo; Lorenz no mide crecimiento ni empleo."}},
+{u:"apuntes",q:"¿Cuándo se dice que existe inflación?",opts:["Cuando sube el precio de un solo producto durante una temporada","Cuando los precios de bienes y servicios aumentan sostenidamente en el tiempo","Cuando cae el consumo y bajan los precios de casi todos los bienes","Cuando el tipo de cambio oficial se mantiene fijo durante un año"],a:[1],exp:{ok:"Hay inflación cuando los precios aumentan de manera sostenida en el tiempo.",wrong:"Una suba puntual o estacional no es inflación; la caída de precios es deflación."}},
+{u:"apuntes",q:"¿Cuál es la diferencia entre el IPC y la canasta básica?",opts:["El IPC mide la pobreza y la canasta básica mide la inflación","El IPC mide la variación de precios y la canasta básica sirve para medir pobreza","Ambos miden la inflación pero los elabora un organismo distinto","Ambos miden la pobreza pero en períodos distintos del año"],a:[1],exp:{ok:"El IPC sigue la evolución de precios (inflación); la canasta básica se usa para medir pobreza.",wrong:"No hay que invertirlos: IPC = inflación, canasta básica = pobreza. Ambos los elabora el INDEC."}},
+{u:"apuntes",q:"Si la canasta valía $2.000 el mes anterior y $2.100 este mes, ¿cuál es el IPC mensual?",opts:["5%","4,8%","10%","0,5%"],a:[0],exp:{ok:"(2.100 − 2.000) ÷ 2.000 × 100 = 5%.",wrong:"Se divide por el valor del mes anterior: 100 ÷ 2.000 = 5%. Dividir por el valor actual daría 4,8% y un error de escala daría 10% o 0,5%."}},
+{u:"apuntes",q:"¿Qué es la estanflación?",opts:["Caída sostenida de precios con aumento del consumo","Estabilidad de precios con desempleo muy bajo","Recesión económica con inflación al mismo tiempo","Inflación con crecimiento económico acelerado"],a:[2],exp:{ok:"Estanflación = recesión (poco consumo) más aumento de precios.",wrong:"La caída de precios es deflación; las otras opciones describen contextos de bonanza, no de recesión con inflación."}},
+{u:"apuntes",q:"Según Friedman y su ecuación m × V = P × Q, si aumenta la cantidad de dinero y Q es constante, ¿qué ocurre?",opts:["Suben los precios, porque hay más dinero para la misma producción","Cae la velocidad de circulación y los precios no cambian","Aumenta la cantidad de bienes y servicios producidos","Disminuye la demanda y los precios bajan"],a:[0],exp:{ok:"Con V y Q constantes, más dinero se traslada proporcionalmente a los precios.",wrong:"La teoría monetarista supone Q constante y V estable; entonces el ajuste recae en P."}},
+{u:"apuntes",q:"¿Qué sostiene la teoría de las ofertas sobre la inflación?",opts:["Que la demanda agregada supera a la oferta","Que el exceso de dinero en circulación sube los precios","Que la falta de bienes de capital impide renovar la producción","Que las empresas trasladan a precios el aumento de sus costos de producción"],a:[3],exp:{ok:"Si suben los costos, las empresas los trasladan a los precios de bienes y servicios.",wrong:"Demanda > oferta es la visión keynesiana, el exceso de dinero es la monetarista y la falta de renovación de capital es la estructural."}},
+{u:"apuntes",q:"Una empresa sube sus precios «por las dudas», sin que hayan subido sus costos. ¿Qué tipo de inflación ilustra?",opts:["Inflación esperada","Inflación inesperada","Inflación estructural","Inflación psicológica"],a:[3],exp:{ok:"La inflación psicológica es el aumento «por las dudas», basado en expectativas.",wrong:"La esperada es la que los especialistas proyectan; la inesperada sorprende y perjudica; la estructural responde a límites de la estructura productiva."}},
+{u:"apuntes",q:"Según los apuntes, si en un año los precios aumentan 40%, ¿cómo se clasifica la inflación?",opts:["Moderada","Alta o galopante","Hiperinflación","Psicológica"],a:[1],exp:{ok:"En los apuntes, la inflación alta o galopante va del 11% al 99% anual.",wrong:"La moderada llega hasta el 10% y la hiperinflación supera el 100% anual; «psicológica» no es una clasificación por magnitud."}},
+{u:"apuntes",q:"¿Por qué a veces baja la desocupación sin que se haya generado más trabajo?",opts:["Porque aumenta la cantidad de personas económicamente activas","Porque algunas personas dejan de buscar empleo y pasan a ser inactivas","Porque el INDEC deja de relevar a las personas con trabajos transitorios","Porque las personas ocupadas pasan a trabajar más horas por semana"],a:[1],exp:{ok:"Quien no busca empleo es inactivo, no desocupado: sale del cálculo aunque no haya trabajo nuevo.",wrong:"Para bajar la tasa sin crear empleo, el cambio debe darse en quienes figuran como desocupados."}},
+{u:"apuntes",q:"Según los apuntes, ¿qué es correcto sobre cómo clasifica a las personas la EPH? Marcá todas las correctas.",opts:["Quien trabaja una hora por semana se considera ocupado","Quien no busca empleo es inactivo y no desocupado","Quien busca activamente trabajo y no lo encuentra es desocupado","Quien trabaja menos de 40 horas semanales se considera desocupado"],a:[0,1,2],exp:{ok:"Una hora semanal alcanza para ser ocupado; sin búsqueda activa se es inactivo; con búsqueda y sin empleo se es desocupado.",wrong:"Trabajar pocas horas no convierte a nadie en desocupado: si trabaja, es ocupado (o subocupado)."}},
+{u:"apuntes",q:"Un trabajador de cosecha queda sin empleo cuando termina la temporada. ¿Qué tipo de desempleo es?",opts:["Friccional","Estacional","Estructural","Cíclico"],a:[1],exp:{ok:"El desempleo estacional depende de la época del año (cosechas, turismo).",wrong:"El friccional surge de la búsqueda de mejor empleo, el estructural de desajustes de calificación y el cíclico de la caída del ciclo económico."}},
+{u:"apuntes",q:"¿Qué registra la cuenta corriente de la balanza de pagos según los apuntes?",opts:["Movimientos de divisas por compra y venta de activos y préstamos","Ingresos y egresos de divisas sin prestación de bienes y servicios","El intercambio de divisas por la compra y venta de bienes y servicios","Las variaciones de reservas luego de sumar ambas cuentas"],a:[2],exp:{ok:"La cuenta corriente muestra el intercambio de divisas por compra y venta de bienes y servicios.",wrong:"Activos y préstamos son cuenta capital; las transferencias sin contraprestación y la variación de reservas son partes distintas."}},
+{u:"apuntes",q:"Un extranjero compra bonos del Estado argentino. ¿Cómo se registra en la balanza de pagos?",opts:["Como ingreso de divisas en la cuenta capital","Como egreso de divisas en la cuenta corriente","Como transferencia sin contraprestación","Como importación de servicios financieros"],a:[0],exp:{ok:"La compra de bonos por un extranjero es movimiento de activos: ingresan divisas en la cuenta capital.",wrong:"No es compra de bienes o servicios (cuenta corriente) ni una transferencia sin contraprestación."}},
+{u:"apuntes",q:"¿Qué es el déficit gemelo?",opts:["Déficit en la balanza de pagos y déficit fiscal al mismo tiempo","Déficit en la cuenta capital y superávit en la cuenta corriente","Déficit de exportaciones en dos períodos consecutivos","Déficit del presupuesto nacional y del presupuesto provincial"],a:[0],exp:{ok:"Se da cuando hay déficit externo (se importa más de lo que se vende) y déficit fiscal (el Estado gasta más de lo que ingresa).",wrong:"«Gemelo» alude a la coincidencia de dos déficits de distinta naturaleza: externo y fiscal."}},
+{u:"apuntes",q:"¿Qué beneficios tiene el comercio internacional según los apuntes? Marcá todas las correctas.",opts:["Diversificar el consumo en producto y calidad","Facilitar la economía de escala y reducir el costo unitario","Abrir mercados emergentes y desarrollados","Asegurar que el país no dependa de ningún comprador"],a:[0,1,2],exp:{ok:"El comercio exterior diversifica el consumo, permite economías de escala y abre mercados.",wrong:"La dependencia del comprador es un riesgo del comercio exterior, no un beneficio."}},
+{u:"apuntes",q:"¿Qué es el dumping?",opts:["Cobrar un arancel variable a productos de precio inestable","Vender por debajo del costo, práctica ilegal en el comercio internacional","Limitar por cupos la cantidad de productos que se importan","Exigir licencias para poder importar determinados productos"],a:[1],exp:{ok:"Dumping es vender por debajo del costo; es ilegal.",wrong:"El arancel variable, los cupos y las licencias son restricciones al comercio, no prácticas de precios predatorios."}},
+{u:"apuntes",q:"La cuota Hilton que la UE aplica a la carne argentina es un ejemplo de:",opts:["Derecho de exportación","Arancel variable","Restricción no arancelaria","Retención aplicada por Argentina"],a:[2],exp:{ok:"Es un cupo: limita la cantidad que se puede importar sin cobrar un impuesto, por eso es no arancelaria.",wrong:"Derechos de exportación y retenciones son impuestos que cobra el país exportador; el arancel variable es un impuesto sobre precios internacionales variables."}},
+{u:"apuntes",q:"Un país aumenta su PBI real porque incorporó más maquinaria y más trabajadores. ¿Qué ocurrió según los apuntes?",opts:["Hubo desarrollo económico sin crecimiento","Hubo inflación por aumento de la cantidad de dinero","Hubo crecimiento económico por mayor cantidad de factores","Hubo crecimiento económico por mejora de la productividad"],a:[2],exp:{ok:"Se puede crecer con más factores (máquinas, trabajadores, tierras) o con mejor productividad; el caso describe lo primero.",wrong:"Mejorar la productividad implicaría fabricar en mejores condiciones (tecnología), algo que el caso no menciona."}},
+{u:"apuntes",q:"¿Cuáles son rasgos de los países subdesarrollados según los apuntes? Marcá todas las correctas.",opts:["Exportan materias primas e importan productos con más valor agregado","Tienen alta desigualdad reflejada en la curva de Lorenz","Cuentan con moneda fuerte y estructura industrial diversificada","Registran alta mortalidad infantil y bajo nivel educativo"],a:[0,1,3],exp:{ok:"Estructura primaria exportadora, alta desigualdad y bajos indicadores sociales son rasgos del subdesarrollo.",wrong:"Moneda fuerte y estructura industrial diversificada son rasgos de los países desarrollados."}},
+{u:"apuntes",q:"¿Cuál es la diferencia entre Estado y Gobierno según los apuntes?",opts:["El Estado es provisorio y el gobierno es permanente","El Estado ejecuta las leyes y el gobierno las sanciona","El Estado es permanente y somos todos; el gobierno es provisorio","El Estado lo integran pocos miles de personas y el gobierno toda la población"],a:[2],exp:{ok:"El Estado es permanente; el gobierno es provisorio y hace cumplir el poder del Estado.",wrong:"Están invertidos los roles: el Estado tiene el poder y es permanente; el gobierno es un grupo reducido que cambia."}},
+{u:"apuntes",q:"¿Cuál de estas opciones enumera los elementos del Estado?",opts:["Idioma, religión, historia y tradiciones","Territorio, población, ley y gobierno","Territorio, burocracia, idioma y presupuesto","Población, moneda, ejército y diputados"],a:[1],exp:{ok:"Los elementos son territorio, población, ley y gobierno.",wrong:"Idioma, religión e historia definen la nación, no el Estado; burocracia y presupuesto son características y herramientas del Estado."}},
+{u:"apuntes",q:"El monopolio de la fuerza del Estado debe ser:",opts:["Rápido, flexible y discrecional","Legal, legítimo y lógico","Provisorio, rotativo y de origen popular","Burocrático, centralizado y reservado"],a:[1],exp:{ok:"Debe ser legal (provenir de la ley), legítimo (la ley nace del proceso correspondiente) y lógico.",wrong:"La fuerza estatal no puede ser discrecional: debe estar sujeta a la ley."}},
+
+{u:"perez enrri",q:"¿Qué retribución cobra el factor capital?",opts:["Renta","Salario","Beneficio","Interés"],a:[3],exp:{ok:"Recursos naturales: renta; trabajo: salario; capital: interés; capacidad empresarial: beneficio.",wrong:"Renta corresponde a recursos naturales, salario al trabajo y beneficio a la capacidad empresarial."}},
+{u:"perez enrri",q:"El costo de oportunidad es:",opts:["El gasto monetario total que implica una decisión","El costo de producir una unidad adicional de un bien","El valor de la mejor alternativa a la que se renuncia al elegir","El precio de mercado del bien que se elige"],a:[2],exp:{ok:"Es el valor de lo que se renuncia: la mejor alternativa desechada.",wrong:"No es un gasto monetario ni el costo marginal de producción: es lo que se resigna al elegir."}},
+{u:"perez enrri",q:"Si el VBP es 800 y el consumo intermedio es 300, ¿cuánto vale el PBI?",opts:["1.100","500","300","800"],a:[1],exp:{ok:"VBP − CI = VAB = PBI → 800 − 300 = 500.",wrong:"1.100 suma en lugar de restar; 800 es el VBP (incluye intermedios) y 300 es solo el consumo intermedio."}},
+{u:"perez enrri",q:"¿Qué diferencia al PBI real del PBI nominal?",opts:["El real descuenta la depreciación y el nominal no","El real usa precios de un año base y el nominal los del año corriente","El real incluye importaciones y el nominal solo exportaciones","El real mide producción nacional y el nominal producción interna"],a:[1],exp:{ok:"El PBI real elimina el efecto de los precios al valuar con un año base; el nominal usa precios corrientes.",wrong:"Descontar el desgaste es la diferencia entre bruto y neto, y nacional vs. interno se refiere a quién produce, no a los precios."}},
+{u:"perez enrri",q:"¿Cómo se obtiene el Producto Nacional a partir del PBI?",opts:["Restando la depreciación del capital","Restando los impuestos netos cobrados por el Estado","Sumando o restando las rentas netas con el exterior","Sumando las importaciones y restando las exportaciones"],a:[2],exp:{ok:"Producto Nacional = PBI ± rentas netas con el exterior (intereses y utilidades cobrados menos pagados).",wrong:"Restar depreciación da el producto neto; importaciones y exportaciones se usan en la identidad del gasto, no para pasar a producto nacional."}},
+{u:"perez enrri",q:"¿Cuáles integran el ingreso Y en las cuentas nacionales? Marcá todas las correctas.",opts:["Remuneración a los asalariados","Excedente bruto de explotación","Ingreso mixto","Consumo intermedio"],a:[0,1,2],exp:{ok:"Y = remuneración al trabajo + ingreso mixto + excedente bruto de explotación + impuestos netos.",wrong:"El consumo intermedio es un insumo que se resta para llegar al valor agregado; no es ingreso de ningún factor."}},
+{u:"perez enrri",q:"¿Qué igualdad expresa la identidad macro en su versión neta?",opts:["PBI = C + I + G + (M − X)","PBI = C + S + T + (X − M)","PBI = C + I + G + (X − M)","PBI = C + I + G − X + M"],a:[2],exp:{ok:"PBI + M = C + I + G + X, o sea PBI = C + I + G + (X − M).",wrong:"Las exportaciones netas suman con signo X − M; invertirlo o reemplazar I y G por S y T cambia la identidad."}},
+{u:"perez enrri",q:"Si el PBI es 30 y la absorción interna es 40, ¿cuánto vale X − M?",opts:["+10","−10","+70","−70"],a:[1],exp:{ok:"PBI = absorción + (X − M) → X − M = 30 − 40 = −10: déficit externo financiado con ahorro externo.",wrong:"El signo es negativo porque el país gasta más de lo que produce; los valores de 70 salen de sumar las magnitudes."}},
+{u:"perez enrri",q:"¿Cuáles son filtraciones o fugas del flujo de gasto? Marcá todas las correctas.",opts:["Ahorro","Impuestos","Importaciones","Inversión"],a:[0,1,2],exp:{ok:"Las filtraciones son ahorro, impuestos e importaciones: salen del flujo de gasto.",wrong:"Inversión, gasto público y exportaciones son inyecciones, porque entran al flujo."}},
+{u:"perez enrri",q:"Con los demás determinantes constantes, una suba del nivel de precios provoca:",opts:["Un desplazamiento de la curva de DA hacia la derecha","Un movimiento a lo largo de la curva hacia menor PBI demandado","Un desplazamiento de la curva de DA hacia la izquierda","Un movimiento a lo largo de la curva hacia mayor PBI demandado"],a:[1],exp:{ok:"El nivel de precios mueve el punto sobre la curva (pendiente negativa): sube el precio, baja el PBI demandado.",wrong:"Los desplazamientos de toda la curva se deben a otros determinantes (gasto público, inversión autónoma, política monetaria)."}},
+{u:"perez enrri",q:"¿Qué ocurre en el tramo vertical de la curva de Oferta Agregada?",opts:["Hay recursos ociosos y el PBI aumenta sin cambio de precios","Suben a la vez el PBI y los precios por aumento de costos unitarios","Todos los recursos están ocupados y un aumento de demanda solo eleva los precios","El producto cae y el desempleo aumenta por falta de demanda"],a:[2],exp:{ok:"En el tramo vertical hay pleno empleo: más demanda solo sube precios.",wrong:"El tramo horizontal es el de recursos ociosos y el intermedio el de suba conjunta de PBI y precios."}},
+{u:"perez enrri",q:"¿Por qué la inversión pertenece tanto a la DA como a la OA?",opts:["Porque se financia con ahorro externo y con ahorro público","Porque depende del nivel de precios igual que el consumo","Porque al comprar máquinas se gasta (demanda) y se amplía la capacidad productiva (oferta)","Porque incluye siempre la variación de existencias"],a:[2],exp:{ok:"La inversión es gasto y a la vez aumenta la capacidad de producir.",wrong:"El financiamiento o la sensibilidad a precios no explican su doble rol."}},
+{u:"perez enrri",q:"En C = Ca + c·Yd, ¿qué indica la propensión marginal a consumir (c)?",opts:["Cuánto aumenta el consumo por cada peso adicional de ingreso disponible; vale entre 0 y 1","El consumo que existe aunque el ingreso disponible sea cero","Que todo el ingreso adicional se consume, porque vale siempre 1","Cuánto aumenta el ahorro por cada peso adicional de ingreso"],a:[0],exp:{ok:"La PMC (c) está entre 0 y 1 y mide el aumento del consumo por peso adicional de Yd.",wrong:"El consumo con ingreso cero es el consumo autónomo (Ca); lo que se ahorra por peso adicional es la PMA = 1 − c."}},
+{u:"perez enrri",q:"Si la propensión marginal a ahorrar es 0,2, ¿cuánto vale el multiplicador simple?",opts:["2","0,2","5","0,8"],a:[2],exp:{ok:"Multiplicador = 1 ÷ PMA = 1 ÷ 0,2 = 5.",wrong:"Se invierte la PMA; 0,2 es la PMA y 0,8 es la PMC."}},
+{u:"perez enrri",q:"Si el PBI real pasa de 200 a 210, ¿cuál es la tasa de crecimiento?",opts:["10%","4,8%","21%","5%"],a:[3],exp:{ok:"(210 − 200) ÷ 200 × 100 = 5%.",wrong:"Se divide por el PBI del período anterior (200); dividir por 210 daría 4,8%."}},
+{u:"perez enrri",q:"Un coeficiente de Gini cercano a 1 indica:",opts:["Distribución pareja del ingreso","Pobreza e indigencia nulas","Ingreso muy concentrado","Una curva de Lorenz sobre la línea de 45°"],a:[2],exp:{ok:"Gini cerca de 1 = máxima concentración; cerca de 0 = igualdad.",wrong:"La curva sobre la diagonal y la distribución pareja corresponden a un Gini cercano a 0."}},
+{u:"perez enrri",q:"¿Quiénes son los subocupados horarios?",opts:["Ocupados que trabajan más de 45 horas semanales","Ocupados que trabajan menos de 35 horas por causas involuntarias y desean trabajar más","Personas sin empleo que dejaron de buscarlo","Ocupados que trabajan menos de 35 horas por elección propia"],a:[1],exp:{ok:"Son ocupados con jornada involuntariamente reducida (menos de 35 horas) que quieren trabajar más.",wrong:"Más de 45 horas son sobreocupados y quienes dejaron de buscar son desanimados (inactivos); si es por elección no hay subocupación."}},
+{u:"perez enrri",q:"¿Qué indica un déficit de cuenta corriente?",opts:["El país acumula activos internacionales netos","El país gasta más de lo que ingresa en divisas y lo cubre con ahorro externo","Sobran divisas que salen como préstamos al exterior","Las reservas aumentan por las exportaciones netas"],a:[1],exp:{ok:"El déficit de cuenta corriente equivale a ahorro externo: se financia con préstamos, inversiones de no residentes o reservas.",wrong:"Acumular activos, prestar al exterior y subir reservas son rasgos de un superávit."}},
+{u:"perez enrri",q:"Con TCN = 1.000 y un arancel del 30%, ¿cuál es el tipo de cambio efectivo para un importador?",opts:["1.300","700","1.030","1.000"],a:[0],exp:{ok:"TCE importador = TCN × (1 + arancel) = 1.000 × 1,30 = 1.300.",wrong:"700 sería la fórmula del exportador con retención del 30%; el arancel multiplica, no se suma como puntos."}},
+{u:"perez enrri",q:"Si los precios internos suben más que los externos con tipo de cambio nominal fijo, el tipo de cambio real:",opts:["Aumenta","Disminuye","No cambia","Se iguala al efectivo"],a:[1],exp:{ok:"TCR = TCN × IPC extranjero ÷ IPC nacional: si el IPC nacional sube más, el TCR baja, como en la convertibilidad.",wrong:"Al aumentar el denominador con el numerador constante, el cociente cae."}},
+{u:"perez enrri",q:"¿Qué tres dimensiones componen el IDH?",opts:["PBI, inflación y desempleo","Esperanza de vida, nivel educacional e ingreso per cápita","Gini, pobreza y mortalidad infantil","Salud, seguridad y exportaciones"],a:[1],exp:{ok:"El IDH del PNUD combina salud, educación e ingreso.",wrong:"Las otras opciones mezclan indicadores macroeconómicos o sociales que no integran el IDH."}},
+{u:"perez enrri",q:"¿Qué diferencia hay entre tasa y tarifa?",opts:["La tarifa es obligatoria para todos; la tasa solo se paga si se usa el servicio","La tasa se paga por servicios administrativos y es obligatoria; la tarifa solo se paga si se usa el servicio","Ambas son impuestos directos sin contraprestación","La tasa grava el consumo y la tarifa grava el ingreso"],a:[1],exp:{ok:"La tasa (alumbrado, barrido) es coercitiva; la tarifa se paga solo si se elige usar el servicio.",wrong:"Ambos son recursos no tributarios con contrapartida directa, a diferencia de los impuestos."}},
+
+{u:"modelos mc",q:"La inflación por demanda:",opts:["Se debe a aumentos en la demanda de varios productos y servicios", "Se genera por aumentos de salarios", "Se produce por aumentos en costos de producción", "Se debe a una mayor demanda de moneda por parte de la población", "Ninguna opción es válida."],a:[0],exp:{ok:"Aparece cuando la demanda agregada crece más rápido que la capacidad productiva.",wrong:"Salarios y costos de producción son causas de la inflación de oferta; la demanda agregada que supera la capacidad productiva es la causa de la inflación por demanda."}},
+{u:"modelos mc",q:"El índice IPC puede no representar la realidad:",opts:["Si se eligen pocos bienes y servicios a monitorear", "Si los productos elegidos tienen acuerdos para no alterar sus valores", "Si se toman muestras en lugares específicos con un determinado estándar de vida", "Si se tergiversan los valores recolectados", "Todas las opciones son válidas."],a:[4],exp:{ok:"Cada situación, por sí sola, sesga el índice.",wrong:"Todas las situaciones mencionadas distorsionan la medición, por eso ninguna alcanza por separado como respuesta."}},
+{u:"modelos mc",q:"El Presupuesto Nacional:",opts:["Es una descripción pormenorizada de todos los gastos que realizará el gobierno", "Lo genera el Congreso Nacional", "Es una herramienta subordinada al Ministerio de Economía", "Lo genera el Senado", "Lo genera la Cámara de Diputados", "Incluye gastos, ingresos, montos y momentos en que se efectuará cada uno de ellos", "Ninguna opción es válida."],a:[5],exp:{ok:"Es la estimación de gastos e ingresos del Estado para un período futuro, con sus montos y momentos.",wrong:"Incluye también los ingresos, no solo los gastos. El Poder Ejecutivo envía el proyecto y el Congreso lo examina, modifica y aprueba, así que no lo genera el Congreso ni una sola cámara."}},
+{u:"modelos mc",q:"Un impuesto progresivo:",opts:["Se aplica solo a los contribuyentes con elevados ingresos", "Tiene la misma alícuota independientemente del nivel de ingresos", "A medida que los ingresos del contribuyente aumentan, la tasa aplicada disminuye", "A medida que los ingresos del contribuyente disminuyen, la tasa aplicada disminuye", "Ninguna opción es válida."],a:[3],exp:{ok:"Si al bajar el ingreso baja la tasa, entonces la tasa crece con el ingreso: eso es un impuesto progresivo.",wrong:"La misma alícuota para todos es un impuesto proporcional, y que la tasa baje al subir el ingreso es un impuesto regresivo."}},
+{u:"modelos mc",q:"Si el Banco Central establece un valor para el tipo de cambio, el mercado de cambios es:",opts:["De flotación", "Libre", "De flotación sucia", "Libre con intervención", "Fijo"],a:[4],exp:{ok:"Si la autoridad determina la relación de cambio, es fijo y el BCRA compra el excedente o vende el faltante de divisas.",wrong:"En el régimen regulado (flotación sucia) el BCRA solo interviene para mantener el valor dentro de ciertos márgenes."}},
+{u:"modelos mc",q:"Para el cálculo del PBI se consideran:",opts:["Todos los bienes y servicios finales", "Todos los bienes y servicios", "Todos los bienes finales", "Todos los bienes intermedios, finales y servicios", "Ninguna opción es válida."],a:[0],exp:{ok:"El PBI suma los bienes y servicios finales producidos en el país.",wrong:"Incluir los intermedios duplicaría el valor; eso corresponde al valor bruto de producción, no al PBI. Tampoco alcanza con considerar solo bienes finales, porque faltarían los servicios."}},
+{u:"modelos mc",q:"El desempleo estructural:",opts:["Se genera por no concordar lo requerido por las empresas con las capacidades de los trabajadores", "Se adjudica a las épocas de desaceleración económica", "Lo sufren los que buscan un empleo por primera vez", "Aumenta en los períodos donde hay expulsión de mano de obra en empleos estacionales", "Ninguna opción es válida."],a:[0],exp:{ok:"Surge de desajustes entre la calificación o ubicación de los trabajadores y lo que demandan las empresas.",wrong:"La desaceleración causa desempleo cíclico, quienes buscan su primer empleo integran el friccional y la expulsión en empleos de temporada es desempleo estacional."}},
+{u:"modelos mc",q:"El Estado se financia exclusivamente con:",opts:["Emisión monetaria", "Deuda externa", "Deuda pública", "El presupuesto nacional", "Ninguna opción es válida."],a:[4],exp:{ok:"El Estado combina impuestos y otros ingresos, deuda interna y externa y, en menor medida, emisión; ninguna opción es exclusiva.",wrong:"El presupuesto es una estimación de ingresos y gastos, no una fuente de financiamiento, y las demás opciones son solo una parte de las fuentes."}},
+{u:"modelos mc",q:"El Estado genera déficit fiscal:",opts:["Si los ingresos por exportaciones son inferiores a los egresos por importaciones", "Si los ingresos superan a los gastos", "Si aumenta el tipo de cambio", "Si contrae deuda pública", "Ninguna opción es válida."],a:[4],exp:{ok:"Hay déficit fiscal cuando los gastos superan a los ingresos, y esa condición no aparece en las opciones.",wrong:"Exportaciones menores que importaciones es déficit comercial; ingresos mayores que gastos es superávit; la deuda pública es una forma de financiar el déficit, no lo que lo genera."}},
+{u:"modelos mc",q:"El desempleo friccional:",opts:["Se adjudica a las épocas de desaceleración económica", "Se genera por no concordar lo requerido por las empresas con las capacidades de los trabajadores", "Lo ocasionan los que dejan su trabajo para acceder a uno mejor", "Aumenta en los períodos donde hay expulsión de mano de obra en empleos estacionales", "Ninguna opción es válida."],a:[2],exp:{ok:"Es el desempleo del proceso normal de búsqueda de trabajo: es transitorio y existe incluso con pleno empleo.",wrong:"La desaceleración causa desempleo cíclico, el desajuste de capacidades es estructural y la expulsión en empleos de temporada es estacional."}},
+{u:"modelos mc",q:"La tasa de desempleo:",opts:["Surge del cociente entre el número de desocupados y la población total", "Es una variable que refleja con exactitud el nivel de desocupación", "Aumenta si parte de la población deja de buscar empleo", "Aumenta si parte de la población recibe subsidios (planes sociales)", "Ninguna opción es válida."],a:[4],exp:{ok:"Ninguna es correcta: la tasa es desocupados sobre la PEA, no sobre la población total.",wrong:"No refleja con exactitud la desocupación (ignora subocupación y desanimados), y quien deja de buscar sale de la PEA, así que la tasa baja en lugar de subir."}},
+{u:"modelos mc",q:"La inflación estructural:",opts:["Se debe a aumentos en la demanda de varios productos y servicios", "Se genera por aumentos de salarios", "Se produce por aumentos de los bienes de capital", "Se debe a una mayor demanda de moneda por parte de la población", "Ninguna opción es válida."],a:[4],exp:{ok:"La inflación estructural nace de heterogeneidades y rigideces de la oferta (mercados oligopólicos, concentración, estrangulamientos); ninguna opción la describe.",wrong:"El aumento de la demanda corresponde a la inflación de demanda y los salarios a la de costos; que suban los bienes de capital no es su causa."}},
+{u:"modelos mc",q:"Para el cálculo del PNI a precios de mercado se consideran:",opts:["Todos los bienes y servicios intermedios", "Los impuestos indirectos y los subsidios", "La depreciación de los bienes de uso", "Ninguna opción es válida."],a:[1],exp:{ok:"A precios de mercado el producto incluye los impuestos indirectos netos de subsidios, porque forman parte del precio que paga el comprador.",wrong:"Los bienes intermedios no se cuentan porque ya están incluidos en el valor del producto final. La depreciación no se suma: se resta del PBI para obtener el producto neto (PNI = PBI − D)."}},
+{u:"modelos mc",q:"Un rubro o renglón de la Cuenta Capital de la Balanza de Pagos es:",opts:["Importaciones de bienes y servicios", "Exportaciones de bienes y servicios", "Transferencias netas", "Inversiones", "Intereses por préstamos"],a:[3],exp:{ok:"La cuenta capital registra el movimiento de divisas por compra y venta de activos, como inversiones, acciones, inmuebles y bonos.",wrong:"Las importaciones y exportaciones de bienes y servicios integran la cuenta corriente, las transferencias netas se registran por separado (sin prestación de bienes o servicios) y los intereses son una renta que también se anota en la cuenta corriente."}},
+{u:"modelos mc",q:"Para el cálculo del PBI a costo de factores se consideran:",opts:["Los ingresos de argentinos radicados en el exterior", "Las amortizaciones de las materias primas", "Los impuestos directos", "Todos los bienes de consumo, intermedios y finales", "Ninguna opción es válida."],a:[4],exp:{ok:"El PBIcf suma los bienes y servicios finales producidos dentro del país, valuados por lo que reciben los factores productivos, sin impuestos indirectos ni subsidios (PBIcf = PBIpm − ii + SUB).",wrong:"Los ingresos de argentinos en el exterior pertenecen al producto nacional, no al interno. Las materias primas y los bienes intermedios no se cuentan para evitar la doble contabilización, y los impuestos directos no son un ajuste del PBI a costo de factores."}},
+{u:"modelos mc",q:"Son filtraciones al flujo circular monetario de un país:",opts:["El ahorro", "Las exportaciones", "El consumo", "Ninguna opción es válida."],a:[0],exp:{ok:"Las filtraciones son el dinero que sale del flujo circular sin volver como gasto: ahorro, impuestos e importaciones (T + A + Imp).",wrong:"Las exportaciones son una inyección, porque ingresa dinero del exterior a las empresas, y el consumo es gasto que vuelve al circuito. Como el ahorro sí es una filtración, la opción «Ninguna» no corresponde."}},
+{u:"modelos mc",q:"Se denomina “déficit gemelo” a la ocurrencia simultánea de:",opts:["Déficit de cuenta corriente y de cuenta capital", "Déficit comercial y déficit de servicios", "Déficit de servicios y déficit de transferencias", "Déficit de cuenta capital y déficit presupuestario", "Déficit presupuestario y déficit en cuenta corriente"],a:[4],exp:{ok:"Es la combinación de déficit fiscal (el Estado gasta más de lo que ingresa) y déficit externo en la cuenta corriente (se importa más de lo que se vende).",wrong:"Las otras combinaciones mezclan rubros de una misma cuenta o cuentas que no son las que definen el concepto: el déficit gemelo une siempre el frente fiscal con el frente externo."}},
+{u:"modelos mc",q:"Son medidas no arancelarias:",opts:["Las cuotas o contingentes", "Los impuestos aplicados a los productos extranjeros", "Los impuestos aplicados a los productos de exportación", "Los derechos compensatorios", "Más de una opción es válida."],a:[0],exp:{ok:"Las cuotas, cupos o contingentes fijan la cantidad que se puede importar por año, sin cobrar un impuesto: por eso son una barrera no arancelaria.",wrong:"Los impuestos a productos extranjeros son derechos de importación, los impuestos a la exportación son retenciones y los derechos compensatorios son un gravamen a la importación que busca neutralizar subsidios. Los tres son medidas arancelarias, así que solo una opción es válida."}},
+{u:"modelos mc",q:"Un impuesto indirecto:",opts:["Se aplica solo a contribuyentes con elevados ingresos", "Tiene la misma alícuota independientemente del nivel de ingresos", "A medida que los ingresos del contribuyente aumentan, la tasa aplicada disminuye", "Se aplica a la empresa que obtuvo ganancias", "Ninguna opción es válida."],a:[1],exp:{ok:"Los impuestos indirectos gravan el consumo y las transacciones, como el IVA, con una alícuota igual para todos sin importar cuánto gane el comprador.",wrong:"Aplicarse solo a ingresos altos describe un impuesto progresivo y gravar las ganancias de una empresa es un impuesto directo. Aunque pesa más en el bolsillo de quienes menos ganan, la tasa no baja al subir el ingreso."}},
+{u:"modelos mc",q:"Es causa de inflación estructural:",opts:["La demanda generalizada de bienes y servicios", "Los aumentos de las materias primas", "Los aumentos generalizados de salarios", "La emisión monetaria", "Ninguna opción es válida."],a:[4],exp:{ok:"La inflación estructural se produce en países que no logran renovar sus bienes de capital ni diversificar su oferta; ninguna de las opciones la describe.",wrong:"La demanda generalizada es la causa de la inflación por demanda, las materias primas y los salarios son causas de la inflación por costos (oferta) y la emisión es la causa de la teoría monetaria."}}
+];
+
+const FIX=/^(todas|ninguna|más de una|otra)/i;
+const $=s=>document.querySelector(s);
+const $$=s=>[...document.querySelectorAll(s)];
+const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const TXT='\uFE0E';
+const LS={
+  get(k,d){try{const v=localStorage.getItem(k);return v===null?d:v}catch(e){return d}},
+  set(k,v){try{localStorage.setItem(k,v)}catch(e){}},
+  del(k){try{localStorage.removeItem(k)}catch(e){}}
+};
+let showExplanations=true, autoAdvance=true;
+let selectedUnits=new Set(), qCount=10, timer=null, S=null, cdText='', filter='all';
+const UNITS=[...new Set(QUESTIONS.map(q=>q.u))];
+selectedUnits=new Set(UNITS);
+
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function clearTimer(){if(timer){clearTimeout(timer);timer=null}}
+function show(id){$$('.screen').forEach(s=>s.classList.toggle('active',s.id===id));window.scrollTo(0,0);closeMenus()}
+
+/* THEME */
+function setTheme(t){document.documentElement.setAttribute('data-theme',t);updateThemeUI()}
+function curTheme(){return document.documentElement.getAttribute('data-theme')}
+function updateThemeUI(){
+  const dark=curTheme()==='dark';
+  $$('.themeBtn').forEach(b=>b.textContent=dark?'☀'+TXT:'☾'+TXT);
+  $('#themeItem').textContent=dark?'☀'+TXT+' Tema claro':'☾'+TXT+' Tema oscuro';
+}
+function toggleTheme(){setTheme(curTheme()==='dark'?'light':'dark')}
+
+/* TOGGLES */
+function syncToggleUI(){
+  const st={showExplanations,autoAdvance};
+  $$('[data-sw]').forEach(s=>s.classList.toggle('on',st[s.dataset.sw]));
+  $$('[data-toggle]').forEach(b=>b.setAttribute('aria-checked',st[b.dataset.toggle]));
+}
+function flip(k){
+  if(k==='showExplanations')showExplanations=!showExplanations;
+  else{autoAdvance=!autoAdvance;if(!autoAdvance){clearTimer();cdText='';const c=$('#cd');if(c)c.remove()}}
+  syncToggleUI();
+  if(S&&S.answered&&$('#quiz').classList.contains('active'))renderFeedback();
+}
+
+/* HOME */
+function renderHome(){
+  const list=$('#unitsList');list.innerHTML='';
+  UNITS.forEach(u=>{
+    const n=QUESTIONS.filter(q=>q.u===u).length;
+    const b=document.createElement('button');
+    b.className='unit'+(selectedUnits.has(u)?' on':'');
+    b.innerHTML='<span class="box">'+(selectedUnits.has(u)?'✓':'')+'</span><span>'+esc(u)+'</span><span class="n">'+n+' preg.</span>';
+    b.onclick=()=>{selectedUnits.has(u)?selectedUnits.delete(u):selectedUnits.add(u);renderHome()};
+    list.appendChild(b);
+  });
+  const all=selectedUnits.size===UNITS.length;
+  $('#allBtn').textContent=all?'✔'+TXT+' Deseleccionar todas':'✔'+TXT+' Seleccionar todas';
+  $('#startBtn').disabled=selectedUnits.size===0;
+  const c=$('#counts');c.innerHTML='<span class="lbl">Preguntas</span>';
+  [[10,'10'],[25,'25'],[50,'50'],[0,'Todas']].forEach(([v,l])=>{
+    const b=document.createElement('button');b.className='cnt'+(qCount===v?' on':'');b.textContent=l;
+    b.onclick=()=>{qCount=v;renderHome()};c.appendChild(b);
+  });
+  $('#cloudBtn').classList.toggle('on',Cloud.on());
+  syncToggleUI();
+}
+function goHome(){clearTimer();Track.discardIfEmpty();S=null;renderHome();show('home')}
+
+/* QUIZ */
+function prep(q){
+  const items=q.opts.map((t,i)=>({t,ok:q.a.includes(i)}));
+  const fixed=items.filter(o=>FIX.test(o.t));
+  const mov=shuffle(items.filter(o=>!FIX.test(o.t)));
+  return {u:q.u,q:q.q,exp:q.exp,opts:[...mov,...fixed],multi:q.a.length>1};
+}
+function startQuiz(){
+  clearTimer();
+  let pool=shuffle(QUESTIONS.filter(q=>selectedUnits.has(q.u)));
+  if(qCount>0)pool=pool.slice(0,qCount);
+  S={qs:pool.map(prep),i:0,score:0,answered:false,sel:new Set(),log:[]};
+  S.startedAt=Date.now();Track.begin(S.startedAt,S.qs.length);
+  show('quiz');renderQuestion();
+}
+function repeatQuiz(){clearTimer();startQuiz()}
+function confirmRestart(){clearTimer();startQuiz()}
+function setBar(mode){
+  const bar=$('#bar'),btn=$('#mainBtn');
+  if(!mode){bar.classList.remove('show');return}
+  bar.classList.add('show');
+  if(mode==='verify'){btn.textContent='Verificar';btn.disabled=S.sel.size===0;btn.onclick=evaluate}
+  else{btn.disabled=false;btn.textContent=S.i+1>=S.qs.length?'Ver resultados':'⏭'+TXT+' Siguiente';btn.onclick=nextQuestion}
+}
+function renderQuestion(){
+  clearTimer();cdText='';
+  const q=S.qs[S.i];S.answered=false;S.sel=new Set();
+  $('#progBar').style.width=(S.i/S.qs.length*100)+'%';
+  $('#counter').textContent=(S.i+1)+'/'+S.qs.length;
+  $('#score').textContent='★'+TXT+' '+S.score;
+  $('#uLabel').textContent=q.u;
+  $('#qText').textContent=q.q;
+  $('#mHint').textContent=q.multi?'Hay más de una respuesta correcta.':'';
+  const box=$('#opts');box.innerHTML='';
+  q.opts.forEach((o,i)=>{
+    const b=document.createElement('button');
+    b.className='opt'+(q.multi?' multi':'');b.dataset.i=i;
+    b.innerHTML='<span class="mark"></span><span class="t">'+esc(o.t)+'</span>';
+    b.onclick=()=>pick(i);box.appendChild(b);
+  });
+  $('#fbWrap').innerHTML='';
+  setBar(q.multi?'verify':null);
+  $('#scrollArea').scrollTop=0;
+}
+function pick(i){
+  if(S.answered)return;
+  const q=S.qs[S.i];
+  if(!q.multi){S.sel=new Set([i]);evaluate();return}
+  S.sel.has(i)?S.sel.delete(i):S.sel.add(i);
+  $$('#opts .opt').forEach(b=>b.classList.toggle('sel',S.sel.has(+b.dataset.i)));
+  $('#mainBtn').disabled=S.sel.size===0;
+}
+function evaluate(){
+  if(S.answered||S.sel.size===0)return;
+  const q=S.qs[S.i];S.answered=true;
+  const correct=q.opts.map((o,i)=>o.ok?i:-1).filter(i=>i>=0);
+  const ok=correct.length===S.sel.size&&correct.every(i=>S.sel.has(i));
+  if(ok)S.score++;
+  S.log.push({q,sel:[...S.sel].sort((a,b)=>a-b),ok});
+  Track.patch({score:S.score,answered:S.log.length});
+  $('#score').textContent='★'+TXT+' '+S.score;
+  $$('#opts .opt').forEach(b=>{
+    const i=+b.dataset.i;b.disabled=true;b.classList.remove('sel');
+    const c=q.opts[i].ok,s=S.sel.has(i);
+    if(c&&s)b.classList.add('ok');else if(c)b.classList.add('okfade');else if(s)b.classList.add('bad');
+  });
+  $('#progBar').style.width=((S.i+1)/S.qs.length*100)+'%';
+  renderFeedback();
+  setBar('next');
+  const sa=$('#scrollArea');sa.scrollTop=sa.scrollHeight;
+  if(ok&&autoAdvance)tick(2);
+}
+function renderFeedback(){
+  const q=S.qs[S.i],last=S.log[S.log.length-1];if(!last)return;
+  const wrap=$('#fbWrap');
+  if(last.ok){
+    wrap.innerHTML='<div class="fb ok"><b>✔'+TXT+' Correcto.</b><span class="cd" id="cd">'+esc(cdText)+'</span></div>';
+    if(!cdText){const c=$('#cd');if(c)c.style.display='none'}
+  }else{
+    const txt=q.opts.filter(o=>o.ok).map(o=>esc(o.t)).join(' · ');
+    wrap.innerHTML='<div class="fb bad"><b>✗ Incorrecto.</b> Respuesta correcta: '+txt+(showExplanations?'<div class="exp">'+esc(q.exp.wrong)+'</div>':'')+'</div>';
+  }
+  const sa=$('#scrollArea');sa.scrollTop=sa.scrollHeight;
+}
+function tick(n){
+  if(n===0){nextQuestion();return}
+  cdText+=(cdText?' ':'Avanzando en ')+n+'s…';
+  const c=$('#cd');if(c){c.style.display='block';c.textContent=cdText}
+  timer=setTimeout(()=>tick(n-1),1000);
+}
+function nextQuestion(){
+  clearTimer();
+  if(S.i+1>=S.qs.length){showResults();return}
+  S.i++;renderQuestion();
+}
+
+/* RESULTS */
+function showResults(){
+  clearTimer();
+  const pct=Math.round(S.score/S.qs.length*100);
+  $('#final').textContent=pct+'% de respuestas correctas';
+  Track.finish();
+  filter='all';setTabs();renderReview();
+  $('#revBox').open=false;$('#tblBox').open=false;
+  show('results');
+}
+function setTabs(){
+  const ok=S.log.filter(l=>l.ok).length,bad=S.log.length-ok;
+  const lab={all:'Todas',ok:ok+(ok===1?' correcta':' correctas'),bad:bad+(bad===1?' incorrecta':' incorrectas')};
+  $$('#tabs .tab').forEach(t=>{t.textContent=lab[t.dataset.f];t.classList.toggle('on',t.dataset.f===filter)});
+}
+function renderReview(){
+  const box=$('#revList');box.innerHTML='';
+  S.log.filter(l=>filter==='all'||(filter==='ok'?l.ok:!l.ok)).forEach(l=>{
+    const d=document.createElement('div');d.className='card rev'+(l.ok?'':' bad');
+    let h='<div class="ulabel">'+esc(l.q.u)+'</div><div class="rq">'+esc(l.q.q)+'</div>';
+    l.q.opts.forEach((o,i)=>{
+      const s=l.sel.includes(i);
+      if(s)h+='<div class="ro '+(o.ok?'ok':'bad')+'"><span>'+(o.ok?'✔'+TXT:'✗')+'</span><span>'+esc(o.t)+'</span></div>';
+      else if(o.ok&&!l.ok)h+='<div class="ro miss"><span>✔'+TXT+'</span><span>'+esc(o.t)+' (correcta)</span></div>';
+    });
+    if(showExplanations)h+='<div class="rx">'+esc(l.ok?l.q.exp.ok:l.q.exp.wrong)+'</div>';
+    d.innerHTML=h;box.appendChild(d);
+  });
+}
+
+/* NUBE: Firebase Realtime Database por REST (URL + código, sin SDK) */
+const Cloud={
+  cfg:null,poll:null,
+  load(){try{this.cfg=JSON.parse(LS.get('quizCloud','null'))}catch(e){this.cfg=null}},
+  on(){return !!(this.cfg&&this.cfg.url&&this.cfg.key)},
+  norm(u){
+    u=String(u||'').trim();if(!u)return '';
+    if(!/^https?:\/\//i.test(u))u='https://'+u;
+    u=u.replace(/\.json.*$/i,'').replace(/\/+$/,'');
+    try{const x=new URL(u);if(x.protocol!=='https:')return '';return x.origin}catch(e){return ''}
+  },
+  key(c){return String(c||'').trim().replace(/[.$#\[\]\/]/g,'_')},
+  url(path,cfg){cfg=cfg||this.cfg;const i=path.indexOf('?'),p=i<0?path:path.slice(0,i),qs=i<0?'':path.slice(i);return cfg.url+'/scores/'+encodeURIComponent(cfg.key)+p+'.json'+qs},
+  async call(method,path,body,cfg){
+    const opt={method};
+    if(body!==undefined){opt.headers={'Content-Type':'application/json'};opt.body=JSON.stringify(body)}
+    const r=await fetch(this.url(path,cfg),opt);
+    if(!r.ok){const e=new Error('HTTP '+r.status);e.status=r.status;throw e}
+    return r.json();
+  }
+};
+
+/* REGISTRO DE PUNTAJES */
+const Track={
+  rec:null,key:null,mode:'local',name:'',items:[],q:Promise.resolve(),lastSync:null,err:false,poll:null,
+  lget(){try{return JSON.parse(LS.get('quizScores','[]'))}catch(e){return[]}},
+  lset(a){LS.set('quizScores',JSON.stringify(a.slice(-300)))},
+  init(){this.name=LS.get('quizName','');Cloud.load();this.startPoll();this.refresh()},
+  startPoll(){
+    clearInterval(this.poll);this.poll=null;
+    if(Cloud.on())this.poll=setInterval(()=>{if(!document.hidden)this.refresh()},5000);
+  },
+  async refresh(){
+    if(Cloud.on()){
+      try{
+        const d=await Cloud.call('GET','');
+        this.items=d?Object.entries(d).filter(([k,v])=>v&&typeof v==='object').map(([k,v])=>Object.assign({key:k},v)):[];
+        this.lastSync=new Date();this.err=false;
+      }catch(e){this.err=true}
+    }else{this.items=this.lget()}
+    this.renderAll();
+  },
+  begin(startedAt,total){
+    this.discardIfEmpty();
+    this.rec={name:this.name,startedAt,score:0,answered:0,total,finished:false,updatedAt:Date.now()};
+    this.mode=Cloud.on()?'cloud':'local';
+    this.key='q'+startedAt.toString(36)+Math.random().toString(36).slice(2,6);
+    this.save();
+  },
+  patch(p){if(!this.rec)return;Object.assign(this.rec,p,{updatedAt:Date.now()});this.save()},
+  finish(){this.patch({score:S.score,answered:S.log.length,finished:true,finishedAt:Date.now()})},
+  save(){
+    const rec=Object.assign({},this.rec),key=this.key;
+    if(this.mode==='cloud'){
+      this.q=this.q.then(()=>Cloud.call('PUT','/'+key,rec)).then(()=>{this.err=false;return this.refresh()}).catch(()=>{this.err=true;this.renderAll()});
+    }else{
+      const a=this.lget(),i=a.findIndex(x=>x.key===key),it=Object.assign({key},rec);
+      if(i>=0)a[i]=it;else a.push(it);
+      this.lset(a);this.items=a;this.renderAll();
+    }
+  },
+  discardIfEmpty(){
+    const r=this.rec,key=this.key;
+    if(!r||r.answered>0||r.finished)return;
+    if(this.mode==='cloud')this.q=this.q.then(()=>Cloud.call('DELETE','/'+key)).catch(()=>{});
+    else{const a=this.lget().filter(x=>x.key!==key);this.lset(a);this.items=a}
+    this.rec=null;this.key=null;
+  },
+  top(){
+    return this.items.filter(x=>x.finished&&x.total>0)
+      .sort((a,b)=>(b.score/b.total)-(a.score/a.total)||b.total-a.total||(a.startedAt||0)-(b.startedAt||0)).slice(0,10);
+  },
+  tableHTML(){
+    const fmt=o=>new Date(o.t).toLocaleString('es-AR',o.o);
+    let st;
+    if(Cloud.on())st=this.err?'No se pudo sincronizar. Reintentando…':'Sincronizado con la nube'+(this.lastSync?' · '+this.lastSync.toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}):'')+'.';
+    else st='Solo en este dispositivo. Conectá la nube desde el menú inicial para sincronizar entre dispositivos.';
+    let h='<div class="tstat">'+esc(st)+'</div>';
+    const top=this.top();
+    if(!top.length)return h+'<div class="tstat">Todavía no hay puntajes registrados.</div>';
+    h+='<div class="tlist">';
+    top.forEach((it,i)=>{
+      const when=new Date(it.startedAt).toLocaleString('es-AR',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit',hour12:false});
+      const pct=Math.round(it.score/it.total*100);
+      h+='<div class="trk'+(it.key===this.key?' me':'')+'"><span class="rk">'+(i+1)+'</span><div class="tmid"><div class="tn">'+esc(it.name||'Sin nombre')+'</div><div class="td">'+esc(when)+'</div></div><div class="ts badge tx">★'+TXT+' '+esc(it.score)+'/'+esc(it.total)+' · '+pct+'%</div></div>';
+    });
+    return h+'</div>';
+  },
+  renderAll(){
+    const h=this.tableHTML();
+    ['#resTable','#qzTable'].forEach(s=>{const el=$(s);if(el)el.innerHTML=h});
+  }
+};
+
+/* MENUS Y MODALES */
+function closeMenus(){$('#setMenu').classList.remove('open');$('#mainMenu').classList.remove('open')}
+function toggleMenu(id){const m=$(id),was=m.classList.contains('open');closeMenus();if(!was)m.classList.add('open')}
+function openOv(id){closeMenus();$(id).classList.add('open')}
+function closeAll(){$$('.ov').forEach(o=>o.classList.remove('open'));pending=null}
+let pending=null;
+function ask(msg,fn){pending=fn;$('#modalMsg').textContent=msg;openOv('#ov')}
+
+/* NOMBRE ANTES DE COMENZAR */
+function openName(){
+  const inp=$('#nameIn');inp.value=Track.name;
+  $('#nameOk').disabled=!inp.value.trim();
+  openOv('#nameOv');setTimeout(()=>inp.focus(),50);
+}
+function confirmName(){
+  const v=$('#nameIn').value.trim().slice(0,40);if(!v)return;
+  Track.name=v;LS.set('quizName',v);closeAll();startQuiz();
+}
+
+/* PANEL «GUARDAR EN LA NUBE» */
+function cloudStatus(t){$('#cloudStatus').textContent=t}
+function openCloud(){
+  $('#cloudUrl').value=Cloud.cfg?Cloud.cfg.url:'';
+  $('#cloudCode').value=Cloud.cfg?Cloud.cfg.code:'';
+  $('#cloudOff').style.display=Cloud.on()?'':'none';
+  cloudStatus(Cloud.on()?'Conectado. Tus puntajes se sincronizan con este código.':'');
+  openOv('#cloudOv');
+}
+async function connectCloud(){
+  const url=Cloud.norm($('#cloudUrl').value),code=$('#cloudCode').value.trim(),key=Cloud.key(code);
+  if(!url){cloudStatus('Pegá una URL válida que empiece con https://');return}
+  if(!key){cloudStatus('Elegí un código.');return}
+  const cfg={url,code,key};
+  cloudStatus('Conectando…');$('#cloudOk').disabled=true;
+  try{
+    await Cloud.call('GET','?shallow=true',undefined,cfg);
+    Cloud.cfg=cfg;LS.set('quizCloud',JSON.stringify(cfg));
+    Track.startPoll();await Track.refresh();
+    $('#cloudOff').style.display='';$('#cloudBtn').classList.add('on');
+    cloudStatus('Conectado. Tus puntajes se sincronizan con este código.');
+  }catch(e){
+    cloudStatus(e.status===401||e.status===403?'Permiso denegado. Revisá las reglas de la base de datos.':e.status===404?'No se encontró la base. Revisá la URL.':'No se pudo conectar. Revisá la URL y tu conexión.');
+  }
+  $('#cloudOk').disabled=false;
+}
+function disconnectCloud(){
+  Cloud.cfg=null;LS.del('quizCloud');Track.startPoll();Track.refresh();
+  $('#cloudOff').style.display='none';$('#cloudBtn').classList.remove('on');
+  cloudStatus('Desconectado. Los puntajes se guardan solo en este dispositivo.');
+}
+
+/* EVENTS */
+$('#allBtn').onclick=()=>{selectedUnits=selectedUnits.size===UNITS.length?new Set():new Set(UNITS);renderHome()};
+$('#startBtn').onclick=openName;
+$$('[data-toggle]').forEach(b=>b.onclick=e=>{e.stopPropagation();flip(b.dataset.toggle)});
+$$('.themeBtn').forEach(b=>b.onclick=toggleTheme);
+$('#themeItem').onclick=e=>{e.stopPropagation();toggleTheme()};
+$('#setBtn').onclick=e=>{e.stopPropagation();toggleMenu('#setMenu')};
+$('#menuBtn').onclick=e=>{e.stopPropagation();toggleMenu('#mainMenu')};
+$('#setMenu').onclick=e=>e.stopPropagation();
+$('#mainMenu').onclick=e=>e.stopPropagation();
+document.addEventListener('click',closeMenus);
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeMenus();closeAll()}});
+function openScores(){openOv('#scoreOv');Track.renderAll();Track.refresh()}
+$('#scoresItem').onclick=openScores;
+$('#rankBtn').onclick=openScores;
+$('#scoreClose').onclick=closeAll;
+$('#restartItem').onclick=()=>ask('¿Reiniciar el cuestionario? Se perderá el progreso y el puntaje actual.',confirmRestart);
+$('#homeItem').onclick=()=>ask('¿Volver al menú inicial? Se cancelará el quiz en curso.',()=>{clearTimer();goHome()});
+$('#mCancel').onclick=closeAll;
+$('#mOk').onclick=()=>{const f=pending;closeAll();clearTimer();if(f)f()};
+$('#nameIn').addEventListener('input',e=>{$('#nameOk').disabled=!e.target.value.trim()});
+$('#nameIn').addEventListener('keydown',e=>{if(e.key==='Enter')confirmName()});
+$('#nameOk').onclick=confirmName;
+$('#nameCancel').onclick=closeAll;
+$('#cloudBtn').onclick=openCloud;
+$('#cloudOk').onclick=connectCloud;
+$('#cloudOff').onclick=disconnectCloud;
+$('#cloudClose').onclick=closeAll;
+$$('.ov').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)closeAll()}));
+$('#repeatBtn').onclick=repeatQuiz;
+$('#newBtn').onclick=goHome;
+$$('#tabs .tab').forEach(t=>t.onclick=()=>{filter=t.dataset.f;setTabs();renderReview()});
+$('#tblBox').addEventListener('toggle',()=>{if($('#tblBox').open){Track.renderAll();Track.refresh()}});
+
+/* INIT */
+setTheme(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+Track.init();
+renderHome();
+</script>
+</body>
+</html>
